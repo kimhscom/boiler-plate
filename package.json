@@ -4,7 +4,8 @@
   "description": "Boiler Plate with NodeJS",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec babel-node index.js --delay 2",
+    "start": "babel-node index.js",
+    "backend": "nodemon --exec babel-node index.js --delay 2",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "amkor",
