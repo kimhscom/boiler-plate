@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 
 const saltRounds = 10;
 
-const UserSchema = mongoose.Schema({
+const UserSchema = new mongoose.Schema({
   firstname: {
     type: String,
     maxlength: 50,
@@ -34,10 +34,9 @@ const UserSchema = mongoose.Schema({
   },
 });
 
-UserSchema.pre("save", (next) => {
+// Do not use arrow function, Because this variable is output as undefined.
+UserSchema.pre("save", function (next) {
   const user = this;
-  console.log(user.password);
-
   if (user.isModified("password")) {
     // Encrypt password.
     bcrypt.genSalt(saltRounds, (err, salt) => {

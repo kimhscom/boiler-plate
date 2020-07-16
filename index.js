@@ -10,6 +10,7 @@ const PORT = 5000;
 
 mongoose
   .connect(
+    // eslint-disable-next-line no-undef
     process.env.PRODUCTION ? process.env.MONGO_URL_PROD : process.env.MONGO_URL,
     {
       useNewUrlParser: true,
@@ -35,6 +36,7 @@ app.post("/register", (req, res) => {
 
   const user = new User(req.body);
 
+  // eslint-disable-next-line no-unused-vars
   user.save((err, userInfo) => {
     if (err) return res.json({ success: false, err });
     return res.status(200).json({ success: true });
