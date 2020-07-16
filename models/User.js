@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const saltRounds = 10;
 
@@ -54,7 +55,24 @@ UserSchema.pre("save", function (next) {
 
 UserSchema.methods.comparePassword = function (plainPassword, cb) {
   bcrypt.compare(plainPassword, this.password, (err, isMatch) => {
-    if (err) return cb(err), cd(null, isMatch);
+    if (err) return cb(err);
+    cb(null, isMatch);
+  });
+};
+
+UserSchema.methods.generateToken = function (cb) {
+  const user = this;
+
+  // Generate token using jsonwebtoken
+  const token = jwt.sign(user._id.toHexString(), "secretToken");
+  /* user._id + "secretToken" = token
+     ->
+     "secretToken" -> user._id */
+
+  user.token = token;
+  user.save((err, user) => {
+    if (err) return cb(err);
+    cb(null, user);
   });
 };
 

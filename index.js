@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 import User from "./models/User";
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // application/json
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 app.get("/", (req, res) => res.send("Hello World!"));
 
@@ -59,7 +61,15 @@ app.post("/login", (req, res) => {
         return res.json({ loginSuccess: false, message: "Wrong password." });
 
       // Generate token if password is correct.
-      user.generateToken((err, user) => {});
+      user.generateToken((err, user) => {
+        if (err) return res.status(400).send(err);
+
+        // Save Token. Where? Cookie, LocalStorage
+        res
+          .cookie("x_auth", user.token)
+          .status(200)
+          .json({ loginSuccess: true, userId: user._id });
+      });
     });
   });
 });
