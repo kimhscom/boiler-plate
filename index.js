@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import auth from "./middleware/auth";
 import User from "./models/User";
 dotenv.config();
 
@@ -32,7 +33,7 @@ app.use(cookieParser());
 
 app.get("/", (req, res) => res.send("Hello World!"));
 
-app.post("/register", (req, res) => {
+app.post("/api/users/register", (req, res) => {
   // If you get the information you need to sign up from the client,
   // Put them in the database.
 
@@ -45,7 +46,7 @@ app.post("/register", (req, res) => {
   });
 });
 
-app.post("/login", (req, res) => {
+app.post("/api/users/login", (req, res) => {
   // Find the requested email in the database.
   User.findOne({ email: req.body.email }, (err, user) => {
     if (!user) {
@@ -71,6 +72,22 @@ app.post("/login", (req, res) => {
           .json({ loginSuccess: true, userId: user._id });
       });
     });
+  });
+});
+
+// role 1 admin role 2 specific departmental admin
+// role 0 -> general user If not roule 0 administrator
+app.get("/api/users/auth", auth, (req, res) => {
+  // It have been through middleware all this way, mean that authentication is true.
+  res.status(200).json({
+    _id: req.user._id,
+    isAdmin: req.user.role === 0 ? false : true,
+    isAuth: true,
+    email: req.user.email,
+    name: req.user.name,
+    lastname: req.user.lastname,
+    role: req.user.role,
+    image: req.user.image,
   });
 });
 
