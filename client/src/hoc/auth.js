@@ -14,8 +14,25 @@ export default function (SpecifiComponent, option, adminRoute = null) {
     useEffect(() => {
       dispatch(auth()).then((response) => {
         console.log(response);
+
+        // Not logged in status
+        if (!response.payload.isAuth) {
+          if (option) {
+            props.history.push("/login");
+          }
+        } else {
+          // Logged in status
+          if (adminRoute && !response.payload.isAdmin) {
+            props.history.push("/");
+          } else {
+            if (option === false) {
+              props.history.push("/");
+            }
+          }
+        }
       });
     }, []);
+    return <SpecifiComponent />;
   }
   return AuthenticationCheck;
 }

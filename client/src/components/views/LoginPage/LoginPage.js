@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Axios from "axios";
 import { useDispatch } from "react-redux";
+import { withRouter } from "react-router-dom";
 import { loginUser } from "../../../_actions/user_actions";
 
 function LoginPage(props) {
@@ -59,4 +60,4 @@ function LoginPage(props) {
   );
 }
 
-export default LoginPage;
+export default withRouter(LoginPage);
